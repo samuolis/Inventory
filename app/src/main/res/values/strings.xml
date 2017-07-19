@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Inventory</string>
+    <!-- Title text for the empty view [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">Empty shop</string>
+
+    <!-- Subtitle text for the empty view  [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Add some products</string>
+    <string name="title_activity_store">StoreActivity</string>
+    <string name="action_delete_all_entries">Delete All Items</string>
+
+    <string name="delete">Delete</string>
+
+    <string name="cancel">Cancel</string>
+
+    <string name="editor_activity_title_new">Add an Item</string>
+
+    <string name="editor_activity_title_edit">Edit Item</string>
+
+</resources>
