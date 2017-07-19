@@ -319,7 +319,10 @@ public class EditActivity extends AppCompatActivity implements
         String[] projection = {
                 StoreEntry._ID,
                 StoreEntry.COLUMN_ITEM_NAME,
-                StoreEntry.COLUMN_ITEM_PRICE};
+                StoreEntry.COLUMN_ITEM_PRICE,
+                StoreEntry.COLUMN_ITEM_COUNT,
+                StoreEntry.COLUMN_SUP_NAME,
+                StoreEntry.COLUMN_SUP_EMAIL};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context

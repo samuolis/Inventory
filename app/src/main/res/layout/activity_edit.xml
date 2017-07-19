@@ -124,7 +124,7 @@
             <EditText
                 android:id="@+id/edit_supplier_email"
                 android:hint="Supplier email"
-                android:inputType="textCapWords"
+                android:inputType="textEmailAddress"
                 style="@style/EditorFieldStyle" />
 
         </LinearLayout>
