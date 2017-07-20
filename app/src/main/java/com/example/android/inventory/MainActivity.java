@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // Create new intent to go to {@link EditorActivity}
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
 
                 // Form the content URI that represents the specific Item that was clicked on,
                 // by appending the "id" (passed as input to this method) onto the
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements
                 // For example, the URI would be "content://com.example.android.Items/Items/2"
                 // if the Item with ID 2 was clicked on.
                 Uri currentItemUri = ContentUris.withAppendedId(StoreEntry.CONTENT_URI, id);
+                Log.i(LOG_TAG, "ID TOKS: " + id);
+                Log.i(LOG_TAG, "URI TOKS: " + currentItemUri);
 
                 // Set the URI on the data field of the intent
                 intent.setData(currentItemUri);

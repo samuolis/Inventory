@@ -16,13 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailsActivity" />
-        <activity android:name=".EditActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-
+        <activity android:name=".EditActivity" />
         <provider
             android:name=".data.StoreProvider"
             android:authorities="com.example.android.inventory"

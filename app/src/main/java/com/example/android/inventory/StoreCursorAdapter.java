@@ -60,7 +60,7 @@ public class StoreCursorAdapter extends CursorAdapter {
         int ItemCount = cursor.getInt(countColumnIndex);
 
         nameTextView.setText(ItemName);
-        summaryTextView.setText(Integer.toString(ItemPrice));
+        summaryTextView.setText(Integer.toString(ItemPrice)+" eur");
         countTextView.setText(Integer.toString(ItemCount));
     }
 
