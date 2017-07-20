@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".DetailsActivity" />
         <activity android:name=".EditActivity" />
+
         <provider
             android:name=".data.StoreProvider"
             android:authorities="com.example.android.inventory"

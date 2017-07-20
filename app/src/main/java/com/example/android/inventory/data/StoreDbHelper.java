@@ -14,7 +14,9 @@ public class StoreDbHelper extends SQLiteOpenHelper {
 
     public static final String LOG_TAG = StoreDbHelper.class.getSimpleName();
 
-    /** Name of the database file */
+    /**
+     * Name of the database file
+     */
     private static final String DATABASE_NAME = "store.db";
 
     /**
@@ -33,7 +35,7 @@ public class StoreDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create a String that contains the SQL statement to create the pets table
-        String SQL_CREATE_ITEMS_TABLE =  "CREATE TABLE " + StoreEntry.TABLE_NAME + " ("
+        String SQL_CREATE_ITEMS_TABLE = "CREATE TABLE " + StoreEntry.TABLE_NAME + " ("
                 + StoreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + StoreEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, "
                 + StoreEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL DEFAULT 0,"

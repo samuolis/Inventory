@@ -16,7 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.inventory.data.StoreContract.StoreEntry;
@@ -43,6 +45,9 @@ public class EditActivity extends AppCompatActivity implements
     
     /** Boolean flag that keeps track of whether the item has been edited (true) or not (false) */
     private boolean mItemHasChanged = false;
+
+    private Button mButtonAddImage;
+    private ImageView mImageProduct;
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying

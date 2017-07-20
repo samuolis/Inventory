@@ -42,7 +42,9 @@ public class StoreProvider extends ContentProvider {
         sUriMatcher.addURI(StoreContract.CONTENT_AUTHORITY, StoreContract.PATH_STORE + "/#", ITEM_ID);
     }
 
-    /** Database helper object */
+    /**
+     * Database helper object
+     */
     private StoreDbHelper mDbHelper;
 
     @Override
@@ -72,7 +74,7 @@ public class StoreProvider extends ContentProvider {
                 break;
             case ITEM_ID:
                 selection = StoreEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(StoreEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
 
@@ -123,7 +125,6 @@ public class StoreProvider extends ContentProvider {
         }
 
 
-
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
@@ -156,7 +157,7 @@ public class StoreProvider extends ContentProvider {
                 // so we know which row to update. Selection will be "_id=?" and selection
                 // arguments will be a String array containing the actual ID.
                 selection = StoreEntry._ID + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 return updatePet(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
@@ -276,4 +277,3 @@ public class StoreProvider extends ContentProvider {
         }
     }
 }
-

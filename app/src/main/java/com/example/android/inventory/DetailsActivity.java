@@ -2,6 +2,8 @@ package com.example.android.inventory;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,29 +12,37 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.inventory.data.StoreContract.StoreEntry;
-
-import static android.R.attr.id;
 
 public class DetailsActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = DetailsActivity.class.getSimpleName();
 
+    final Context mContext = this;
 
-    /** Identifier for the item data loader */
+
+    /**
+     * Identifier for the item data loader
+     */
     private static final int EXISTING_ITEM_LOADER = 0;
 
-    /** Content URI for the existing item (null if it's a new item) */
+    /**
+     * Content URI for the existing item (null if it's a new item)
+     */
     private Uri mCurrentItemUri;
 
-    /** EditText field to enter the item's name */
+    /**
+     * EditText field to enter the item's name
+     */
     private TextView mNameEditText;
 
     private TextView mPriceEditText;
@@ -42,9 +52,26 @@ public class DetailsActivity extends AppCompatActivity implements
     private TextView mSupNameEditText;
 
     private TextView mSupEmailEditText;
+    private String supEmail;
+    private String supName;
 
-    /** Boolean flag that keeps track of whether the item has been edited (true) or not (false) */
+    private Button contactSupplier;
+    private Button plus;
+    private Button minus;
+    private String countNumberString;
+    private int countNumber;
+
+    /**
+     * Boolean flag that keeps track of whether the item has been edited (true) or not (false)
+     */
     private boolean mItemHasChanged = false;
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mItemHasChanged = true;
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +83,10 @@ public class DetailsActivity extends AppCompatActivity implements
         mCountEditText = (TextView) findViewById(R.id.edit_item_count);
         mSupNameEditText = (TextView) findViewById(R.id.edit_supplier_name);
         mSupEmailEditText = (TextView) findViewById(R.id.edit_supplier_email);
+        contactSupplier = (Button) findViewById(R.id.contact_supplier);
+        plus = (Button) findViewById(R.id.plus);
+        minus = (Button) findViewById(R.id.minus);
+
 
         // Examine the intent that was used to launch this activity,
         // in order to figure out if we're creating a new item or editing an existing one.
@@ -63,6 +94,33 @@ public class DetailsActivity extends AppCompatActivity implements
         mCurrentItemUri = intent.getData();
 
         getLoaderManager().initLoader(EXISTING_ITEM_LOADER, null, this);
+
+        plus.setOnTouchListener(mTouchListener);
+        minus.setOnTouchListener(mTouchListener);
+
+
+    }
+
+    public void sendSupplier(View view) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", supEmail, null));
+        intent.putExtra(Intent.EXTRA_SUBJECT, supName);
+
+        startActivity(intent);
+    }
+
+    public void plus(View view) {
+        countNumberString = mCountEditText.getText().toString().trim();
+        countNumber = Integer.parseInt(countNumberString);
+        countNumber = countNumber + 1;
+        mCountEditText.setText(String.valueOf(countNumber));
+    }
+
+    public void minus(View view) {
+        countNumberString = mCountEditText.getText().toString().trim();
+        countNumber = Integer.parseInt(countNumberString);
+        countNumber = countNumber - 1;
+        mCountEditText.setText(String.valueOf(countNumber));
     }
 
     @Override
@@ -85,6 +143,20 @@ public class DetailsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        // If the item hasn't changed, continue with handling back button press
+        if (!mItemHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+        String countString = mCountEditText.getText().toString().trim();
+        ContentValues values = new ContentValues();
+        values.put(StoreEntry.COLUMN_ITEM_COUNT, countString);
+        int rowsAffected = getContentResolver().update(mCurrentItemUri, values, null, null);
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
@@ -97,9 +169,13 @@ public class DetailsActivity extends AppCompatActivity implements
                 // {@link ItemEntry#CONTENT_URI}.
                 // For example, the URI would be "content://com.example.android.Items/Items/2"
                 // if the Item with ID 2 was clicked on.
-                Log.i(LOG_TAG, "ID TOKS: " + id);
 
-                // Set the URI on the data field of the intent
+                if (mItemHasChanged) {
+                    String countString = mCountEditText.getText().toString().trim();
+                    ContentValues values = new ContentValues();
+                    values.put(StoreEntry.COLUMN_ITEM_COUNT, countString);
+                    int rowsAffected = getContentResolver().update(mCurrentItemUri, values, null, null);
+                }
                 intent.setData(mCurrentItemUri);
 
                 // Launch the {@link EditorActivity} to display the data for the current Item.
@@ -114,7 +190,6 @@ public class DetailsActivity extends AppCompatActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     private void showDeleteConfirmationDialog() {
@@ -161,7 +236,7 @@ public class DetailsActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this,("Deleted succesfully" ),
+                Toast.makeText(this, ("Deleted succesfully"),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -203,16 +278,16 @@ public class DetailsActivity extends AppCompatActivity implements
             // Find the columns of item attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_NAME);
             int priceColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_PRICE);
-            int countColumnIndex=cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_COUNT);
-            int supNameColumnIndex=cursor.getColumnIndex(StoreEntry.COLUMN_SUP_NAME);
-            int supEmailColumnIndex=cursor.getColumnIndex(StoreEntry.COLUMN_SUP_EMAIL);
+            int countColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_COUNT);
+            int supNameColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_SUP_NAME);
+            int supEmailColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_SUP_EMAIL);
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             int price = cursor.getInt(priceColumnIndex);
             int count = cursor.getInt(countColumnIndex);
-            String supName = cursor.getString(supNameColumnIndex);
-            String supEmail = cursor.getString(supEmailColumnIndex);
+            supName = cursor.getString(supNameColumnIndex);
+            supEmail = cursor.getString(supEmailColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
@@ -238,5 +313,3 @@ public class DetailsActivity extends AppCompatActivity implements
 
 
 }
-
-

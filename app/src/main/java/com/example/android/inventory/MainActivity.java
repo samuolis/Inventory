@@ -3,6 +3,7 @@ package com.example.android.inventory;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,11 +27,9 @@ public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
-
-    /** Identifier for the Item data loader */
+    final Context mContext = this;
     private static final int STORE_LOADER = 0;
-
-    /** Adapter for the ListView */
+    private ListView itemListView;
     StoreCursorAdapter mCursorAdapter;
 
     @Override
@@ -49,8 +48,22 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // Find the ListView which will be populated with the Item data
-        ListView itemListView = (ListView) findViewById(R.id.list);
+        itemListView= (ListView) findViewById(R.id.list);
 
+
+
+
+        // Setup the item click listener
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.i(LOG_TAG, "CIA VYKSTA!!!!!!");
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                Uri currentItemUri = ContentUris.withAppendedId(StoreEntry.CONTENT_URI, id);
+                intent.setData(currentItemUri);
+                startActivity(intent);
+            }
+        });
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         itemListView.setEmptyView(emptyView);
@@ -60,33 +73,8 @@ public class MainActivity extends AppCompatActivity implements
         mCursorAdapter = new StoreCursorAdapter(this, null);
         itemListView.setAdapter(mCursorAdapter);
 
-        // Setup the item click listener
-        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // Create new intent to go to {@link EditorActivity}
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-
-                // Form the content URI that represents the specific Item that was clicked on,
-                // by appending the "id" (passed as input to this method) onto the
-                // {@link ItemEntry#CONTENT_URI}.
-                // For example, the URI would be "content://com.example.android.Items/Items/2"
-                // if the Item with ID 2 was clicked on.
-                Uri currentItemUri = ContentUris.withAppendedId(StoreEntry.CONTENT_URI, id);
-                Log.i(LOG_TAG, "ID TOKS: " + id);
-                Log.i(LOG_TAG, "URI TOKS: " + currentItemUri);
-
-                // Set the URI on the data field of the intent
-                intent.setData(currentItemUri);
-
-                // Launch the {@link EditorActivity} to display the data for the current Item.
-                startActivity(intent);
-            }
-        });
-
         // Kick off the loader
         getLoaderManager().initLoader(STORE_LOADER, null, this);
-
     }
 
     @Override
@@ -155,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

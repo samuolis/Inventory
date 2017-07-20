@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,171 +12,176 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <!-- Overview category -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp">
-
-        <!-- Label -->
-        <TextView
-            android:text="Overview"
-            style="@style/CategoryStyle" />
-
-        <!-- Input fields -->
+        <!-- Overview category -->
         <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:background="@drawable/rounded_corner"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
 
-            <!-- Name field -->
+            <!-- Label -->
             <TextView
-                android:id="@+id/edit_item_name"
-                style="@style/EditorFieldStyle" />
+                style="@style/CategoryStyle"
+                android:text="Overview" />
 
+            <!-- Input fields -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/rounded_corner"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
+
+                <!-- Name field -->
+                <TextView
+                    android:id="@+id/edit_item_name"
+                    style="@style/EditorFieldStyle" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp">
 
-        <!-- Label -->
-        <TextView
-            android:text="Price"
-            style="@style/CategoryStyle" />
-
-        <!-- Input fields -->
         <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:background="@drawable/rounded_corner"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
+
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="Price" />
+
+            <!-- Input fields -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/rounded_corner"
+                android:orientation="horizontal"
+                android:paddingLeft="4dp">
+
+                <!-- Name field -->
+                <TextView
+                    android:id="@+id/edit_item_price"
+                    style="@style/EditorFieldStyle2"
+                    android:layout_width="0dp"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:id="@+id/label_item_price"
+                    style="@style/EditorUnitsStyle2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="eur" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <!-- Name field -->
+            <!-- Label -->
             <TextView
-                android:id="@+id/edit_item_price"
-                style="@style/EditorFieldStyle2"
+                style="@style/CategoryStyle"
+                android:text="Supplier info" />
+
+            <!-- Input fields -->
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="2"/>
-            <TextView
-                android:id="@+id/label_item_price"
-                android:text="eur"
-                android:gravity="center"
-                style="@style/EditorUnitsStyle2"
-                android:layout_width="0dp"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Label -->
-        <TextView
-            android:text="Supplier info"
-            style="@style/CategoryStyle" />
-
-        <!-- Input fields -->
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:orientation="vertical">
-
-            <!-- Name field -->
-            <TextView
-                android:id="@+id/edit_supplier_name"
-                android:background="@drawable/rounded_corner"
-                style="@style/EditorFieldStyle"
-                android:layout_marginBottom="5dp"/>
-            <TextView
-                android:id="@+id/edit_supplier_email"
-                android:background="@drawable/rounded_corner"
-                style="@style/EditorFieldStyle"
-                />
-            <TextView
-                android:id="@+id/contact_supplier"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contact Supplier"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_corner3"
-                android:layout_gravity="center_horizontal"
-                />
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
 
+                <!-- Name field -->
+                <TextView
+                    android:id="@+id/edit_supplier_name"
+                    style="@style/EditorFieldStyle"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/rounded_corner" />
+
+                <TextView
+                    android:id="@+id/edit_supplier_email"
+                    style="@style/EditorFieldStyle"
+                    android:background="@drawable/rounded_corner" />
+
+                <Button
+                    android:id="@+id/contact_supplier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounded_corner3"
+                    android:onClick="sendSupplier"
+                    android:text="Contact Supplier" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
+
             <TextView
-                android:text="Count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
                 android:gravity="center"
-                android:textStyle="bold"
-                android:padding="20dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+                android:padding="20dp"
+                android:text="Count"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:paddingLeft="4dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:id="@+id/minus"
-                    android:textSize="30sp"
-                    android:text="-"
-                    android:gravity="center"
-                    android:background="@drawable/rounded_corners2"
-                    />
-                <TextView
-                    android:id="@+id/edit_item_count"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    tools:text="10"
-                    android:textSize="30sp"
-                    android:gravity="center"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="4dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:id="@+id/plus"
-                    android:textSize="30sp"
-                    android:text="+"
-                    android:background="@drawable/rounded_corner3"
-                    android:gravity="center"
-                    />
+                    <Button
+                        android:id="@+id/minus"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_corners2"
+                        android:gravity="center"
+                        android:onClick="minus"
+                        android:text="-"
+                        android:textSize="30sp" />
 
+                    <TextView
+                        android:id="@+id/edit_item_count"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="30sp"
+                        tools:text="10" />
+
+                    <Button
+                        android:id="@+id/plus"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_corner3"
+                        android:gravity="center"
+                        android:onClick="plus"
+                        android:text="+"
+                        android:textSize="30sp" />
+
+                </LinearLayout>
             </LinearLayout>
-    </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
-
