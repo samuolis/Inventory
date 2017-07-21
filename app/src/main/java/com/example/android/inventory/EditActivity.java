@@ -63,7 +63,6 @@ public class EditActivity extends AppCompatActivity implements
     private EditText mSupNameEditText;
 
     private EditText mSupEmailEditText;
-    private boolean imageHelper;
 
     /**
      * Boolean flag that keeps track of whether the item has been edited (true) or not (false)
@@ -90,7 +89,6 @@ public class EditActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        imageHelper = false;
         mButtonAddImage = (Button) findViewById(R.id.upload_image_button);
         mImageProduct = (ImageView) findViewById(R.id.item_image);
         mButtonAddImage.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +155,7 @@ public class EditActivity extends AppCompatActivity implements
 
 
     private void saveItem() {
-        if (!imageHelper) {
+        if (mImageProduct.getDrawable()==null) {
             Toast.makeText(mContext, "Please insert Image", Toast.LENGTH_LONG).show();
             return;
         }
@@ -180,20 +178,20 @@ public class EditActivity extends AppCompatActivity implements
         String supNameString = mSupNameEditText.getText().toString().trim();
         String supEmailString = mSupEmailEditText.getText().toString().trim();
 
-        if(nameString.isEmpty()){
+        if (nameString.isEmpty()) {
             Toast.makeText(mContext, "Please insert Item name", Toast.LENGTH_LONG).show();
             return;
         }
-        if(priceString.isEmpty()){
+        if (priceString.isEmpty()) {
             Toast.makeText(mContext, "Please insert Item price", Toast.LENGTH_LONG).show();
             return;
         }
-        if(countString.isEmpty()){
+        if (countString.isEmpty()) {
             Toast.makeText(mContext, "Please insert Item count", Toast.LENGTH_LONG).show();
             return;
         }
 
-        if(supNameString.isEmpty()||supEmailString.isEmpty()){
+        if (supNameString.isEmpty() || supEmailString.isEmpty()) {
             Toast.makeText(mContext, "Please insert Supplier info", Toast.LENGTH_LONG).show();
             return;
         }
@@ -272,11 +270,10 @@ public class EditActivity extends AppCompatActivity implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        // If this is a new item, hide the "Delete" menu item.
-        if (mCurrentItemUri == null) {
-            MenuItem menuItem = menu.findItem(R.id.action_delete);
-            menuItem.setVisible(false);
-        }
+        MenuItem deleteItem = menu.findItem(R.id.action_delete);
+        deleteItem.setVisible(false);
+        MenuItem editItem = menu.findItem(R.id.action_edit);
+        editItem.setVisible(false);
         return true;
     }
 
@@ -289,11 +286,6 @@ public class EditActivity extends AppCompatActivity implements
                 // Save item to database
                 saveItem();
                 // Exit activity
-
-                return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -325,57 +317,10 @@ public class EditActivity extends AppCompatActivity implements
         showUnsavedChangesDialog(discardButtonClickListener);
     }
 
-    private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Delete this item ?");
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the item.
-                deleteItem();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the item.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
 
     /**
      * Perform the deletion of the item in the database.
      */
-    private void deleteItem() {
-        // Only perform the delete if this is an existing item.
-        if (mCurrentItemUri != null) {
-            // Call the ContentResolver to delete the item at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentitemUri
-            // content URI already identifies the item that we want.
-            int rowsDeleted = getContentResolver().delete(mCurrentItemUri, null, null);
-
-            // Show a toast message depending on whether or not the delete was successful.
-            if (rowsDeleted == 0) {
-                // If no rows were deleted, then there was an error with the delete.
-                Toast.makeText(this, ("error delleting item"),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this, ("Deleted succesfully"),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        // Close the activity
-        finish();
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -491,7 +436,6 @@ public class EditActivity extends AppCompatActivity implements
 
                 try {
                     getContentResolver().takePersistableUriPermission(mImageUri, takeFlags);
-                    imageHelper = true;
                 } catch (SecurityException e) {
                     e.printStackTrace();
                 }

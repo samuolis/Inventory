@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.i(LOG_TAG, "CIA VYKSTA!!!!!!");
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 Uri currentItemUri = ContentUris.withAppendedId(StoreEntry.CONTENT_URI, id);
                 intent.setData(currentItemUri);

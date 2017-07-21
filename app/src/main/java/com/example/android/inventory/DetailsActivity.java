@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.android.inventory.data.StoreContract.StoreEntry;
 
+
 public class DetailsActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -81,7 +82,6 @@ public class DetailsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
         mNameEditText = (TextView) findViewById(R.id.edit_item_name);
         mPriceEditText = (TextView) findViewById(R.id.edit_item_price);
         mCountEditText = (TextView) findViewById(R.id.edit_item_count);
