@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-
 public class Utils {
 
     public static final String LOG_TAG = Utils.class.getSimpleName();
@@ -42,9 +41,10 @@ public class Utils {
 
             int photoW = bmOptions.outWidth;
             int photoH = bmOptions.outHeight;
-
+            Log.i(LOG_TAG, "" + targetW + " " + targetH + " " + photoW + " " + photoH);
             // Determine how much to scale down the image
             int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
 
             // Decode the image file into a Bitmap sized to fill the View
             bmOptions.inJustDecodeBounds = false;

@@ -3,13 +3,20 @@ package com.example.android.inventory;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -21,20 +28,34 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.android.inventory.data.StoreContract;
 import com.example.android.inventory.data.StoreContract.StoreEntry;
 
+import java.io.ByteArrayOutputStream;
+
 public class EditActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
-    /** Identifier for the item data loader */
+    /**
+     * Identifier for the item data loader
+     */
     private static final int EXISTING_ITEM_LOADER = 0;
+    private static final String STATE_IMAGE_URI = "STATE_IMAGE_URI";
+    public static final String LOG_TAG = DetailsActivity.class.getSimpleName();
 
-    /** Content URI for the existing item (null if it's a new item) */
+    private static final int IMAGE_REQUEST_CODE = 0;
+    final Context mContext = this;
+
+    /**
+     * Content URI for the existing item (null if it's a new item)
+     */
     private Uri mCurrentItemUri;
 
-    /** EditText field to enter the item's name */
+    /**
+     * EditText field to enter the item's name
+     */
     private EditText mNameEditText;
-    
+
     private EditText mPriceEditText;
 
     private EditText mCountEditText;
@@ -42,12 +63,16 @@ public class EditActivity extends AppCompatActivity implements
     private EditText mSupNameEditText;
 
     private EditText mSupEmailEditText;
-    
-    /** Boolean flag that keeps track of whether the item has been edited (true) or not (false) */
+    private boolean imageHelper;
+
+    /**
+     * Boolean flag that keeps track of whether the item has been edited (true) or not (false)
+     */
     private boolean mItemHasChanged = false;
 
     private Button mButtonAddImage;
     private ImageView mImageProduct;
+    private Uri mImageUri;
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
@@ -65,6 +90,16 @@ public class EditActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+        imageHelper = false;
+        mButtonAddImage = (Button) findViewById(R.id.upload_image_button);
+        mImageProduct = (ImageView) findViewById(R.id.item_image);
+        mButtonAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonImageClick();
+
+            }
+        });
 
         // Examine the intent that was used to launch this activity,
         // in order to figure out if we're creating a new item or editing an existing one.
@@ -103,11 +138,40 @@ public class EditActivity extends AppCompatActivity implements
         mCountEditText.setOnTouchListener(mTouchListener);
         mSupNameEditText.setOnTouchListener(mTouchListener);
         mSupEmailEditText.setOnTouchListener(mTouchListener);
-        
-        
+
+
     }
-    
+
+    private void buttonImageClick() {
+        Intent intent = new Intent();
+
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_REQUEST_CODE);
+    }
+
+
     private void saveItem() {
+        if (!imageHelper) {
+            Toast.makeText(mContext, "Please insert Image", Toast.LENGTH_LONG).show();
+            return;
+        }
+        //Read input fields
+        Drawable imageImage = mImageProduct.getDrawable();
+        //Convert to bitmap
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) imageImage);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        //Convert to byte to store
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] imageByte = bos.toByteArray();
+
+
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
         String nameString = mNameEditText.getText().toString().trim();
@@ -115,9 +179,27 @@ public class EditActivity extends AppCompatActivity implements
         String countString = mCountEditText.getText().toString().trim();
         String supNameString = mSupNameEditText.getText().toString().trim();
         String supEmailString = mSupEmailEditText.getText().toString().trim();
-        
+
+        if(nameString.isEmpty()){
+            Toast.makeText(mContext, "Please insert Item name", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(priceString.isEmpty()){
+            Toast.makeText(mContext, "Please insert Item price", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(countString.isEmpty()){
+            Toast.makeText(mContext, "Please insert Item count", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(supNameString.isEmpty()||supEmailString.isEmpty()){
+            Toast.makeText(mContext, "Please insert Supplier info", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (mCurrentItemUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString)&& TextUtils.isEmpty(countString)&& TextUtils.isEmpty(supNameString)&& TextUtils.isEmpty(supEmailString)) {
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) && TextUtils.isEmpty(countString) && TextUtils.isEmpty(supNameString) && TextUtils.isEmpty(supEmailString) && TextUtils.isEmpty(imageByte.toString())) {
             // Since no fields were modified, we can return early without creating a new item.
             // No need to create ContentValues and no need to do any ContentProvider operations.
             return;
@@ -139,6 +221,8 @@ public class EditActivity extends AppCompatActivity implements
         values.put(StoreEntry.COLUMN_ITEM_COUNT, count);
         values.put(StoreEntry.COLUMN_SUP_NAME, supNameString);
         values.put(StoreEntry.COLUMN_SUP_EMAIL, supEmailString);
+
+        values.put(StoreEntry.COLUMN_ITEM_IMAGE, imageByte);
 
         // Determine if this is a new or existing item by checking if mCurrentitemUri is null or not
         if (mCurrentItemUri == null) {
@@ -174,6 +258,7 @@ public class EditActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             }
         }
+        finish();
     }
 
     @Override
@@ -204,7 +289,7 @@ public class EditActivity extends AppCompatActivity implements
                 // Save item to database
                 saveItem();
                 // Exit activity
-                finish();
+
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -284,7 +369,7 @@ public class EditActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this,("Deleted succesfully" ),
+                Toast.makeText(this, ("Deleted succesfully"),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -302,7 +387,8 @@ public class EditActivity extends AppCompatActivity implements
                 StoreEntry.COLUMN_ITEM_PRICE,
                 StoreEntry.COLUMN_ITEM_COUNT,
                 StoreEntry.COLUMN_SUP_NAME,
-                StoreEntry.COLUMN_SUP_EMAIL};
+                StoreEntry.COLUMN_SUP_EMAIL,
+                StoreEntry.COLUMN_ITEM_IMAGE};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -326,9 +412,11 @@ public class EditActivity extends AppCompatActivity implements
             // Find the columns of item attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_NAME);
             int priceColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_PRICE);
-            int countColumnIndex=cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_COUNT);
-            int supNameColumnIndex=cursor.getColumnIndex(StoreEntry.COLUMN_SUP_NAME);
-            int supEmailColumnIndex=cursor.getColumnIndex(StoreEntry.COLUMN_SUP_EMAIL);
+            int countColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_COUNT);
+            int supNameColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_SUP_NAME);
+            int supEmailColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_SUP_EMAIL);
+            int imageColumnIndex = cursor.getColumnIndex(StoreContract.StoreEntry.COLUMN_ITEM_IMAGE);
+
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
@@ -336,6 +424,7 @@ public class EditActivity extends AppCompatActivity implements
             int count = cursor.getInt(countColumnIndex);
             String supName = cursor.getString(supNameColumnIndex);
             String supEmail = cursor.getString(supEmailColumnIndex);
+            byte[] image = cursor.getBlob(imageColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
@@ -343,7 +432,8 @@ public class EditActivity extends AppCompatActivity implements
             mCountEditText.setText(Integer.toString(count));
             mSupNameEditText.setText(supName);
             mSupEmailEditText.setText(supEmail);
-
+            Bitmap itemBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            mImageProduct.setImageBitmap(itemBitmap);
 
         }
     }
@@ -387,5 +477,31 @@ public class EditActivity extends AppCompatActivity implements
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-    
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST_CODE && (resultCode == RESULT_OK)) {
+            try {
+                mImageUri = data.getData();
+                int takeFlags = data.getFlags();
+                takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                try {
+                    getContentResolver().takePersistableUriPermission(mImageUri, takeFlags);
+                    imageHelper = true;
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+
+                mImageProduct.setImageBitmap(Utils.getBitmapFromUri(mImageUri, mContext, mImageProduct));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -62,13 +62,12 @@ public class StoreCursorAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.list_item, parent ,false);
+        View view = inflater.inflate(R.layout.list_item, parent, false);
 
         ProductViewHolder holder = new ProductViewHolder(view);
 
 
         view.setTag(holder);
-
 
 
         return view;
@@ -83,7 +82,7 @@ public class StoreCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
 
-        ProductViewHolder holder = (ProductViewHolder)view.getTag();
+        ProductViewHolder holder = (ProductViewHolder) view.getTag();
 
         // Find the columns of item attributes that we're interested in
         int nameColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_NAME);
@@ -109,13 +108,14 @@ public class StoreCursorAdapter extends CursorAdapter {
             }
         });
     }
+
     private void adjustStock(Context context, Uri productUri, int currentStock) {
 
         // Reduce stock, check if new stock is less than 0, in which case set it to 0
         int newCount;
         if (currentStock >= 1)
             newCount = currentStock - 1;
-        else newCount=0;
+        else newCount = 0;
 
         // Update table with new stock of the product
         ContentValues contentValues = new ContentValues();

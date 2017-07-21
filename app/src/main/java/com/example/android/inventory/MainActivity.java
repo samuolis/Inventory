@@ -48,9 +48,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // Find the ListView which will be populated with the Item data
-        itemListView= (ListView) findViewById(R.id.list);
-
-
+        itemListView = (ListView) findViewById(R.id.list);
 
 
         // Setup the item click listener

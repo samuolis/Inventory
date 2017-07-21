@@ -16,11 +16,6 @@
 
     <string name="editor_activity_title_edit">Edit Item</string>
 
-    <string name="tag_typeface_r">TypefaceRegular</string>
-    <string name="tag_typeface_b">TypefaceBold</string>
-    <string name="tag_typeface_i">TypefaceItalic</string>
-    <string name="tag_typeface_title">TypefaceTitle</string>
-
     <string name="exception_image_load_failed">Failed to load image</string>
 
 </resources>

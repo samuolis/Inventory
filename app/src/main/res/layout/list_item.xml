@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    android:padding="10dp"
-    android:descendantFocusability="blocksDescendants" >
+    android:padding="10dp">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -38,20 +38,21 @@
         android:id="@+id/count"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginRight="10sp"
         android:layout_weight="1"
         android:background="@drawable/rounded_corners2"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:layout_marginRight="10sp"
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="#2B3D4D"
         tools:text="5" />
+
     <Button
         android:id="@+id/buyOne"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@drawable/rounded_corner3"
-        android:text="Buy 1"
-        android:onClick="buyOne"/>
+        android:onClick="buyOne"
+        android:text="Buy 1" />
 </LinearLayout>

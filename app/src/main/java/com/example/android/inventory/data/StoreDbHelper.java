@@ -41,7 +41,8 @@ public class StoreDbHelper extends SQLiteOpenHelper {
                 + StoreEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL DEFAULT 0,"
                 + StoreEntry.COLUMN_ITEM_COUNT + " INTEGER NOT NULL DEFAULT 0,"
                 + StoreEntry.COLUMN_SUP_NAME + " TEXT NOT NULL,"
-                + StoreEntry.COLUMN_SUP_EMAIL + " TEXT NOT NULL);";
+                + StoreEntry.COLUMN_SUP_EMAIL + " TEXT NOT NULL,"
+                + StoreEntry.COLUMN_ITEM_IMAGE + " TEXT);";
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_ITEMS_TABLE);

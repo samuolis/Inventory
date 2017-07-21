@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,12 +57,13 @@ public class DetailsActivity extends AppCompatActivity implements
     private TextView mSupEmailEditText;
     private String supEmail;
     private String supName;
+    private String name;
 
-    private Button contactSupplier;
     private Button plus;
     private Button minus;
     private String countNumberString;
     private int countNumber;
+    private ImageView mImageProduct;
 
     /**
      * Boolean flag that keeps track of whether the item has been edited (true) or not (false)
@@ -83,9 +87,9 @@ public class DetailsActivity extends AppCompatActivity implements
         mCountEditText = (TextView) findViewById(R.id.edit_item_count);
         mSupNameEditText = (TextView) findViewById(R.id.edit_supplier_name);
         mSupEmailEditText = (TextView) findViewById(R.id.edit_supplier_email);
-        contactSupplier = (Button) findViewById(R.id.contact_supplier);
         plus = (Button) findViewById(R.id.plus);
         minus = (Button) findViewById(R.id.minus);
+        mImageProduct = (ImageView) findViewById(R.id.image_details);
 
 
         // Examine the intent that was used to launch this activity,
@@ -104,8 +108,8 @@ public class DetailsActivity extends AppCompatActivity implements
     public void sendSupplier(View view) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", supEmail, null));
-        intent.putExtra(Intent.EXTRA_SUBJECT, supName);
-
+        intent.putExtra(Intent.EXTRA_SUBJECT, name);
+        intent.putExtra(Intent.EXTRA_TEXT, "Dear " + supName + ",");
         startActivity(intent);
     }
 
@@ -254,7 +258,8 @@ public class DetailsActivity extends AppCompatActivity implements
                 StoreEntry.COLUMN_ITEM_PRICE,
                 StoreEntry.COLUMN_ITEM_COUNT,
                 StoreEntry.COLUMN_SUP_NAME,
-                StoreEntry.COLUMN_SUP_EMAIL};
+                StoreEntry.COLUMN_SUP_EMAIL,
+                StoreEntry.COLUMN_ITEM_IMAGE};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -281,13 +286,15 @@ public class DetailsActivity extends AppCompatActivity implements
             int countColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_COUNT);
             int supNameColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_SUP_NAME);
             int supEmailColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_SUP_EMAIL);
+            int imageColumnIndex = cursor.getColumnIndex(StoreEntry.COLUMN_ITEM_IMAGE);
 
             // Extract out the value from the Cursor for the given column index
-            String name = cursor.getString(nameColumnIndex);
+            name = cursor.getString(nameColumnIndex);
             int price = cursor.getInt(priceColumnIndex);
             int count = cursor.getInt(countColumnIndex);
             supName = cursor.getString(supNameColumnIndex);
             supEmail = cursor.getString(supEmailColumnIndex);
+            byte[] image = cursor.getBlob(imageColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
@@ -295,6 +302,9 @@ public class DetailsActivity extends AppCompatActivity implements
             mCountEditText.setText(Integer.toString(count));
             mSupNameEditText.setText(supName);
             mSupEmailEditText.setText(supEmail);
+
+            Bitmap itemBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            mImageProduct.setImageBitmap(itemBitmap);
 
 
         }
@@ -310,6 +320,5 @@ public class DetailsActivity extends AppCompatActivity implements
         mSupEmailEditText.setText("");
 
     }
-
 
 }

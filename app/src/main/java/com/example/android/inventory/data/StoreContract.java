@@ -44,7 +44,7 @@ public class StoreContract {
         public final static String COLUMN_ITEM_NAME = "name";
 
         public final static String COLUMN_ITEM_PRICE = "price";
-
+        public final static String COLUMN_ITEM_IMAGE = "product_image";
         public final static String COLUMN_ITEM_COUNT = "count";
         public final static String COLUMN_SUP_NAME = "supname";
         public final static String COLUMN_SUP_EMAIL = "supemail";

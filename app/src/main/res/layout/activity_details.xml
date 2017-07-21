@@ -22,7 +22,7 @@
             <!-- Label -->
             <TextView
                 style="@style/CategoryStyle"
-                android:text="Overview" />
+                android:text="Name" />
 
             <!-- Input fields -->
             <LinearLayout
@@ -183,5 +183,9 @@
             </LinearLayout>
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/image_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
